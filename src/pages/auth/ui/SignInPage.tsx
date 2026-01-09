@@ -7,7 +7,7 @@ function SignInPage() {
         routing="path"
         path="/sign-in"
         signUpUrl="/sign-up"
-        fallbackRedirectUrl="/"
+        fallbackRedirectUrl="/workspace"
         appearance={{
           elements: {
             rootBox: 'mx-auto',
