@@ -1,11 +1,4 @@
-import { Card, CardHeader, CardTitle, CardDescription } from '@/shared/ui'
-import { Folder } from 'lucide-react'
-
-type Project = {
-  id: string
-  name: string
-  description: string | null
-}
+import { ProjectCard, type Project } from '@/entities/projects'
 
 type WorkspacePageProps = {
   projects: Project[]
@@ -25,18 +18,8 @@ function WorkspacePage({ projects }: WorkspacePageProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <Card key={project.id} className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardHeader>
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Folder className="h-5 w-5 text-primary" />
-                </div>
-                <CardTitle className="text-lg">{project.name}</CardTitle>
-                {project.description && (
-                  <CardDescription className="line-clamp-2">{project.description}</CardDescription>
-                )}
-              </CardHeader>
-            </Card>
+          {projects.map(project => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       )}
