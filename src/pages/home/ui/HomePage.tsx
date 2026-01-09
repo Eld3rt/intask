@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Button } from '@/shared/ui'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/shared/ui'
 import { CheckCircle2, Zap, Shield, Users, Sparkles, ArrowRight } from 'lucide-react'
@@ -30,13 +31,17 @@ function HomePage() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="text-base px-8 py-6 h-auto">
-                Начать работу
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button size="lg" variant="outline" className="text-base px-8 py-6 h-auto">
-                Узнать больше
-              </Button>
+              <Link href="/sign-up">
+                <Button size="lg" className="text-base px-8 py-6 h-auto">
+                  Начать работу
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/sign-in">
+                <Button size="lg" variant="outline" className="text-base px-8 py-6 h-auto">
+                  Войти
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -144,10 +149,12 @@ function HomePage() {
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Присоединяйтесь к тысячам пользователей, которые уже повысили свою продуктивность с intask
           </p>
-          <Button size="lg" className="text-base px-8 py-6 h-auto">
-            Создать аккаунт
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <Link href="/sign-up">
+            <Button size="lg" className="text-base px-8 py-6 h-auto">
+              Создать аккаунт
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </section>
 
