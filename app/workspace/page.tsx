@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { WorkspacePage } from '@/pages/workspace'
-import { getUserProjects, ensureDefaultProject } from '@/shared/lib/projects'
+import { getUserProjects, ensureDefaultProject } from '@/entities/projects'
 
 export default async function Workspace() {
   const { userId } = await auth()

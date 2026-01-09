@@ -1,4 +1,5 @@
 import { ProjectCard, type Project } from '@/entities/projects'
+import { CreateProjectButton } from '@/features/projects'
 
 type WorkspacePageProps = {
   projects: Project[]
@@ -7,9 +8,12 @@ type WorkspacePageProps = {
 function WorkspacePage({ projects }: WorkspacePageProps) {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">Workspace</h1>
-        <p className="text-muted-foreground">Manage your projects and tasks</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">Workspace</h1>
+          <p className="text-muted-foreground">Manage your projects and tasks</p>
+        </div>
+        <CreateProjectButton />
       </div>
 
       {projects.length === 0 ? (

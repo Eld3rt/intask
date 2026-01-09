@@ -39,6 +39,7 @@ export async function ensureDefaultProject(userId: string) {
   // Create default project
   const defaultProject = await prisma.project.create({
     data: {
+      slug: crypto.randomUUID(),
       name: 'My First Project',
       description: 'Welcome to intask! This is your first project.',
       members: {
