@@ -4,12 +4,13 @@ import { auth } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { prisma } from '@/shared/db'
 
-const createProjectSchema = z.object({
+const updateProjectSchema = z.object({
+  id: z.string().min(1, 'Project ID is required'),
   name: z.string().min(1, 'Project name is required').max(100, 'Project name must be less than 100 characters'),
   description: z.string().max(500, 'Description must be less than 500 characters').optional().nullable(),
 })
 
-export async function createProject(data: { name: string; description?: string | null }) {
+export async function updateProject(data: { id: string; name: string; description?: string | null }) {
   try {
     const { userId } = await auth()
 
@@ -17,17 +18,28 @@ export async function createProject(data: { name: string; description?: string |
       return { error: 'Unauthorized' }
     }
 
-    const validatedData = createProjectSchema.parse(data)
-    const project = await prisma.project.create({
+    const validatedData = updateProjectSchema.parse(data)
+
+    // Verify user is a member of the project
+    const projectMember = await prisma.projectMember.findFirst({
+      where: {
+        projectId: validatedData.id,
+        userId,
+      },
+    })
+
+    if (!projectMember) {
+      return { error: 'Project not found or access denied' }
+    }
+
+    // Update the project
+    const project = await prisma.project.update({
+      where: {
+        id: validatedData.id,
+      },
       data: {
-        slug: crypto.randomUUID(),
         name: validatedData.name,
         description: validatedData.description || null,
-        members: {
-          create: {
-            userId,
-          },
-        },
       },
     })
 
@@ -37,6 +49,6 @@ export async function createProject(data: { name: string; description?: string |
       return { error: error.issues[0].message }
     }
 
-    return { error: 'Failed to create project' }
+    return { error: 'Failed to update project' }
   }
 }
