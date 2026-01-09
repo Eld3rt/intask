@@ -33,6 +33,7 @@ function CreateProjectModal({ open, onOpenChange }: CreateProjectModalProps) {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
@@ -41,11 +42,19 @@ function CreateProjectModal({ open, onOpenChange }: CreateProjectModalProps) {
     },
   })
 
+  const nameValue = watch('name')
+  const isNameEmpty = !nameValue || nameValue.trim().length === 0
+
   const onSubmit = async (data: CreateProjectFormData) => {
     setIsSubmitting(true)
     setError(null)
     try {
-      const result = await createProject(data)
+      // Trim spaces from name and description
+      const trimmedData = {
+        name: data.name.trim(),
+        description: data.description?.trim() || null,
+      }
+      const result = await createProject(trimmedData)
 
       if (result.error) {
         setError(result.error)
@@ -90,7 +99,7 @@ function CreateProjectModal({ open, onOpenChange }: CreateProjectModalProps) {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || isNameEmpty}>
               {isSubmitting ? 'Creating...' : 'Create Project'}
             </Button>
           </DialogFooter>

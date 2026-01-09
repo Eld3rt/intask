@@ -17,7 +17,12 @@ export async function createProject(data: { name: string; description?: string |
       return { error: 'Unauthorized' }
     }
 
-    const validatedData = createProjectSchema.parse(data)
+    // Trim spaces from input data
+    const trimmedData = {
+      name: data.name.trim(),
+      description: data.description?.trim() || null,
+    }
+    const validatedData = createProjectSchema.parse(trimmedData)
     const project = await prisma.project.create({
       data: {
         slug: crypto.randomUUID(),

@@ -40,6 +40,7 @@ function EditProjectModal({ open, onOpenChange, project }: EditProjectModalProps
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<UpdateProjectFormData>({
     resolver: zodResolver(updateProjectSchema),
     defaultValues: {
@@ -58,17 +59,28 @@ function EditProjectModal({ open, onOpenChange, project }: EditProjectModalProps
     }
   }, [project, open, reset])
 
+  const nameValue = watch('name') || ''
+  const descriptionValue = watch('description') || ''
+
+  // Check if form values have changed from original project
+  const hasChanges = project
+    ? nameValue.trim() !== project.name.trim() ||
+      (descriptionValue.trim() || '') !== (project.description?.trim() || '')
+    : false
+
   const onSubmit = async (data: UpdateProjectFormData) => {
     if (!project) return
 
     setIsSubmitting(true)
     setError(null)
     try {
-      const result = await updateProject({
+      // Trim spaces from name and description
+      const trimmedData = {
         id: project.id,
-        name: data.name,
-        description: data.description,
-      })
+        name: data.name.trim(),
+        description: data.description?.trim() || null,
+      }
+      const result = await updateProject(trimmedData)
 
       if (result.error) {
         setError(result.error)
@@ -115,7 +127,7 @@ function EditProjectModal({ open, onOpenChange, project }: EditProjectModalProps
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || !hasChanges}>
               {isSubmitting ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

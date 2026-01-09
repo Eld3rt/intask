@@ -18,7 +18,13 @@ export async function updateProject(data: { id: string; name: string; descriptio
       return { error: 'Unauthorized' }
     }
 
-    const validatedData = updateProjectSchema.parse(data)
+    // Trim spaces from input data
+    const trimmedData = {
+      id: data.id,
+      name: data.name.trim(),
+      description: data.description?.trim() || null,
+    }
+    const validatedData = updateProjectSchema.parse(trimmedData)
 
     // Verify user is a member of the project
     const projectMember = await prisma.projectMember.findFirst({
