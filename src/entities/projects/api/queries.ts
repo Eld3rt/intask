@@ -52,3 +52,34 @@ export async function ensureDefaultProject(userId: string) {
 
   return defaultProject
 }
+
+export async function getProjectBySlug(slug: string, userId: string) {
+  // First verify user is a member of the project
+  const projectMember = await prisma.projectMember.findFirst({
+    where: {
+      project: {
+        slug,
+      },
+      userId,
+    },
+  })
+
+  if (!projectMember) {
+    return null
+  }
+
+  // Fetch project details
+  const project = await prisma.project.findUnique({
+    where: {
+      slug,
+    },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      description: true,
+    },
+  })
+
+  return project
+}

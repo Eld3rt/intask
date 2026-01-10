@@ -46,8 +46,12 @@ function AcceptInvitationModal({ open, onOpenChange, invitation, token }: Accept
         return
       }
 
-      // Success - redirect to workspace
-      router.push('/workspace')
+      // Success - redirect to project board
+      if (result.project?.slug) {
+        router.push(`/workspace/${result.project.slug}`)
+      } else {
+        router.push('/workspace')
+      }
     } catch (error) {
       console.error('Error accepting invitation:', error)
       setError('Failed to accept invitation')

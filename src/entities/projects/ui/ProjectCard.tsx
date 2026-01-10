@@ -6,11 +6,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { EditProjectModal, DeleteProjectModal, InviteProjectModal } from '@/features/projects'
 import { Folder, MoreVertical } from 'lucide-react'
 import { Button } from '@/shared/ui'
+import Link from 'next/link'
 
 type Project = {
   id: string
   name: string
   description: string | null
+  slug: string
 }
 
 type ProjectCardProps = {
@@ -23,7 +25,7 @@ function ProjectCard({ project }: ProjectCardProps) {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
 
   return (
-    <>
+    <Link href={`/workspace/${project.slug}`}>
       <Card className="hover:shadow-md transition-shadow cursor-pointer relative">
         <CardHeader>
           <div className="absolute top-4 right-4">
@@ -58,7 +60,7 @@ function ProjectCard({ project }: ProjectCardProps) {
         projectName={project.name}
       />
       <DeleteProjectModal open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen} project={project} />
-    </>
+    </Link>
   )
 }
 

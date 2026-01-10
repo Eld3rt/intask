@@ -41,6 +41,7 @@ export async function acceptInvitation(data: { token: string }) {
           select: {
             id: true,
             name: true,
+            slug: true,
           },
         },
       },
@@ -115,6 +116,7 @@ export async function acceptInvitation(data: { token: string }) {
       project: {
         id: invitation.project.id,
         name: invitation.project.name,
+        slug: invitation.project.slug,
       },
     }
   } catch (error) {
