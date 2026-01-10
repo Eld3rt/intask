@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect, notFound } from 'next/navigation'
 import { ProjectBoardPage } from '@/pages/workspace/ui/ProjectBoardPage'
 import { getProjectBySlug } from '@/entities/projects'
+import { getProjectTasks } from '@/entities/tasks'
 
 type ProjectBoardPageProps = {
   params: Promise<{ projectSlug: string }>
@@ -23,5 +24,8 @@ export default async function ProjectBoard({ params }: ProjectBoardPageProps) {
     notFound()
   }
 
-  return <ProjectBoardPage project={project} />
+  // Fetch tasks for the project
+  const tasks = await getProjectTasks(project.id)
+
+  return <ProjectBoardPage project={project} tasks={tasks} />
 }

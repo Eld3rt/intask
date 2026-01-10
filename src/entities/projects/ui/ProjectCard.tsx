@@ -23,35 +23,50 @@ function ProjectCard({ project }: ProjectCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const handleMenuItemSelect = (action: () => void) => {
+    setIsDropdownOpen(false)
+    action()
+  }
 
   return (
-    <Link href={`/workspace/${project.slug}`}>
-      <Card className="hover:shadow-md transition-shadow cursor-pointer relative">
-        <CardHeader>
-          <div className="absolute top-4 right-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={e => e.stopPropagation()}>
-                  <MoreVertical className="h-4 w-4" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>Edit</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsInviteModalOpen(true)}>Invite</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsDeleteModalOpen(true)} className="text-destructive">
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <Folder className="h-5 w-5 text-primary" />
-          </div>
-          <CardTitle className="text-lg pr-8">{project.name}</CardTitle>
-          {project.description && <CardDescription className="line-clamp-2">{project.description}</CardDescription>}
-        </CardHeader>
-      </Card>
+    <div className="relative">
+      <Link href={`/workspace/${project.slug}`}>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer relative">
+          <CardHeader>
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <Folder className="h-5 w-5 text-primary" />
+            </div>
+            <CardTitle className="text-lg pr-8">{project.name}</CardTitle>
+            {project.description && <CardDescription className="line-clamp-2">{project.description}</CardDescription>}
+          </CardHeader>
+        </Card>
+      </Link>
+      <div className="absolute top-4 right-4 z-10" onClick={e => e.stopPropagation()}>
+        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={e => e.stopPropagation()}>
+              <MoreVertical className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onSelect={() => handleMenuItemSelect(() => setIsEditModalOpen(true))}>
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => handleMenuItemSelect(() => setIsInviteModalOpen(true))}>
+              Invite
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => handleMenuItemSelect(() => setIsDeleteModalOpen(true))}
+              className="text-destructive"
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <EditProjectModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} project={project} />
       <InviteProjectModal
         open={isInviteModalOpen}
@@ -60,7 +75,7 @@ function ProjectCard({ project }: ProjectCardProps) {
         projectName={project.name}
       />
       <DeleteProjectModal open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen} project={project} />
-    </Link>
+    </div>
   )
 }
 

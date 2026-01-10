@@ -11,4 +11,6 @@
 export type * from './models/Project'
 export type * from './models/ProjectMember'
 export type * from './models/ProjectInvitation'
+export type * from './models/Task'
+export type * from './models/TaskAssignee'
 export type * from './commonInputTypes'
