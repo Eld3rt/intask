@@ -191,6 +191,7 @@ export type ProjectWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   members?: Prisma.ProjectMemberListRelationFilter
+  invitations?: Prisma.ProjectInvitationListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type ProjectOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   members?: Prisma.ProjectMemberOrderByRelationAggregateInput
+  invitations?: Prisma.ProjectInvitationOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +216,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   members?: Prisma.ProjectMemberListRelationFilter
+  invitations?: Prisma.ProjectInvitationListRelationFilter
 }, "id" | "slug">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -248,6 +251,7 @@ export type ProjectCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.ProjectMemberCreateNestedManyWithoutProjectInput
+  invitations?: Prisma.ProjectInvitationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -258,6 +262,7 @@ export type ProjectUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutProjectInput
+  invitations?: Prisma.ProjectInvitationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -268,6 +273,7 @@ export type ProjectUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.ProjectMemberUpdateManyWithoutProjectNestedInput
+  invitations?: Prisma.ProjectInvitationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -278,6 +284,7 @@ export type ProjectUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.ProjectMemberUncheckedUpdateManyWithoutProjectNestedInput
+  invitations?: Prisma.ProjectInvitationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -365,6 +372,20 @@ export type ProjectUpdateOneRequiredWithoutMembersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutMembersInput, Prisma.ProjectUpdateWithoutMembersInput>, Prisma.ProjectUncheckedUpdateWithoutMembersInput>
 }
 
+export type ProjectCreateNestedOneWithoutInvitationsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutInvitationsInput, Prisma.ProjectUncheckedCreateWithoutInvitationsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutInvitationsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutInvitationsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutInvitationsInput, Prisma.ProjectUncheckedCreateWithoutInvitationsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutInvitationsInput
+  upsert?: Prisma.ProjectUpsertWithoutInvitationsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutInvitationsInput, Prisma.ProjectUpdateWithoutInvitationsInput>, Prisma.ProjectUncheckedUpdateWithoutInvitationsInput>
+}
+
 export type ProjectCreateWithoutMembersInput = {
   id?: string
   slug: string
@@ -372,6 +393,7 @@ export type ProjectCreateWithoutMembersInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  invitations?: Prisma.ProjectInvitationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutMembersInput = {
@@ -381,6 +403,7 @@ export type ProjectUncheckedCreateWithoutMembersInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  invitations?: Prisma.ProjectInvitationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutMembersInput = {
@@ -406,6 +429,7 @@ export type ProjectUpdateWithoutMembersInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invitations?: Prisma.ProjectInvitationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutMembersInput = {
@@ -415,6 +439,63 @@ export type ProjectUncheckedUpdateWithoutMembersInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invitations?: Prisma.ProjectInvitationUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutInvitationsInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.ProjectMemberCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutInvitationsInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.ProjectMemberUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutInvitationsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutInvitationsInput, Prisma.ProjectUncheckedCreateWithoutInvitationsInput>
+}
+
+export type ProjectUpsertWithoutInvitationsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutInvitationsInput, Prisma.ProjectUncheckedUpdateWithoutInvitationsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutInvitationsInput, Prisma.ProjectUncheckedCreateWithoutInvitationsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutInvitationsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutInvitationsInput, Prisma.ProjectUncheckedUpdateWithoutInvitationsInput>
+}
+
+export type ProjectUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.ProjectMemberUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.ProjectMemberUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 
@@ -424,10 +505,12 @@ export type ProjectUncheckedUpdateWithoutMembersInput = {
 
 export type ProjectCountOutputType = {
   members: number
+  invitations: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   members?: boolean | ProjectCountOutputTypeCountMembersArgs
+  invitations?: boolean | ProjectCountOutputTypeCountInvitationsArgs
 }
 
 /**
@@ -447,6 +530,13 @@ export type ProjectCountOutputTypeCountMembersArgs<ExtArgs extends runtime.Types
   where?: Prisma.ProjectMemberWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountInvitationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectInvitationWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -456,6 +546,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   members?: boolean | Prisma.Project$membersArgs<ExtArgs>
+  invitations?: boolean | Prisma.Project$invitationsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
@@ -489,6 +580,7 @@ export type ProjectSelectScalar = {
 export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   members?: boolean | Prisma.Project$membersArgs<ExtArgs>
+  invitations?: boolean | Prisma.Project$invitationsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -498,6 +590,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Project"
   objects: {
     members: Prisma.$ProjectMemberPayload<ExtArgs>[]
+    invitations: Prisma.$ProjectInvitationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -901,6 +994,7 @@ readonly fields: ProjectFieldRefs;
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   members<T extends Prisma.Project$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invitations<T extends Prisma.Project$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1345,6 +1439,30 @@ export type Project$membersArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ProjectMemberScalarFieldEnum | Prisma.ProjectMemberScalarFieldEnum[]
+}
+
+/**
+ * Project.invitations
+ */
+export type Project$invitationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectInvitation
+   */
+  select?: Prisma.ProjectInvitationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectInvitation
+   */
+  omit?: Prisma.ProjectInvitationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInvitationInclude<ExtArgs> | null
+  where?: Prisma.ProjectInvitationWhereInput
+  orderBy?: Prisma.ProjectInvitationOrderByWithRelationInput | Prisma.ProjectInvitationOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectInvitationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectInvitationScalarFieldEnum | Prisma.ProjectInvitationScalarFieldEnum[]
 }
 
 /**

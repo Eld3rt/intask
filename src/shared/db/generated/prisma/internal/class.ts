@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Project {\n  id          String   @id @default(cuid())\n  slug        String   @unique\n  name        String\n  description String?\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  members ProjectMember[]\n\n  @@index([createdAt])\n}\n\nmodel ProjectMember {\n  id        String   @id @default(cuid())\n  projectId String\n  userId    String // Clerk user ID\n  createdAt DateTime @default(now())\n\n  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  @@unique([projectId, userId])\n  @@index([userId])\n  @@index([projectId])\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum InvitationStatus {\n  pending\n  accepted\n}\n\nmodel Project {\n  id          String   @id @default(cuid())\n  slug        String   @unique\n  name        String\n  description String?\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  members     ProjectMember[]\n  invitations ProjectInvitation[]\n\n  @@index([createdAt])\n}\n\nmodel ProjectMember {\n  id        String   @id @default(cuid())\n  projectId String\n  userId    String // Clerk user ID\n  createdAt DateTime @default(now())\n\n  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  @@unique([projectId, userId])\n  @@index([userId])\n  @@index([projectId])\n}\n\nmodel ProjectInvitation {\n  id        String           @id @default(cuid())\n  projectId String\n  email     String\n  token     String           @unique\n  status    InvitationStatus @default(pending)\n  expiresAt DateTime\n  createdAt DateTime         @default(now())\n\n  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  @@unique([projectId, email, status])\n  @@index([projectId])\n  @@index([email])\n  @@index([token])\n  @@index([status])\n  @@index([expiresAt])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Project\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"members\",\"kind\":\"object\",\"type\":\"ProjectMember\",\"relationName\":\"ProjectToProjectMember\"}],\"dbName\":null},\"ProjectMember\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"ProjectToProjectMember\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Project\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"members\",\"kind\":\"object\",\"type\":\"ProjectMember\",\"relationName\":\"ProjectToProjectMember\"},{\"name\":\"invitations\",\"kind\":\"object\",\"type\":\"ProjectInvitation\",\"relationName\":\"ProjectToProjectInvitation\"}],\"dbName\":null},\"ProjectMember\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"ProjectToProjectMember\"}],\"dbName\":null},\"ProjectInvitation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"InvitationStatus\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"ProjectToProjectInvitation\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -193,6 +193,16 @@ export interface PrismaClient<
     * ```
     */
   get projectMember(): Prisma.ProjectMemberDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.projectInvitation`: Exposes CRUD operations for the **ProjectInvitation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProjectInvitations
+    * const projectInvitations = await prisma.projectInvitation.findMany()
+    * ```
+    */
+  get projectInvitation(): Prisma.ProjectInvitationDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

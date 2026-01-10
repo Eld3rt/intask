@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/shared/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui'
-import { EditProjectModal, DeleteProjectModal } from '@/features/projects'
+import { EditProjectModal, DeleteProjectModal, InviteProjectModal } from '@/features/projects'
 import { Folder, MoreVertical } from 'lucide-react'
 import { Button } from '@/shared/ui'
 
@@ -20,6 +20,7 @@ type ProjectCardProps = {
 function ProjectCard({ project }: ProjectCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
 
   return (
     <>
@@ -35,6 +36,7 @@ function ProjectCard({ project }: ProjectCardProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsInviteModalOpen(true)}>Invite</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setIsDeleteModalOpen(true)} className="text-destructive">
                   Delete
                 </DropdownMenuItem>
@@ -49,6 +51,12 @@ function ProjectCard({ project }: ProjectCardProps) {
         </CardHeader>
       </Card>
       <EditProjectModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} project={project} />
+      <InviteProjectModal
+        open={isInviteModalOpen}
+        onOpenChange={setIsInviteModalOpen}
+        projectId={project.id}
+        projectName={project.name}
+      />
       <DeleteProjectModal open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen} project={project} />
     </>
   )

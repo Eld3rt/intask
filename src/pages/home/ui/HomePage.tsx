@@ -32,15 +32,15 @@ function HomePage() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/sign-up">
-                <Button size="lg" className="text-base px-8 py-6 h-auto">
-                  Начать работу
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+              <Button size="lg" className="text-base px-8 py-6 h-auto">
+                Начать работу
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
               </Link>
               <Link href="/sign-in">
-                <Button size="lg" variant="outline" className="text-base px-8 py-6 h-auto">
+              <Button size="lg" variant="outline" className="text-base px-8 py-6 h-auto">
                   Войти
-                </Button>
+              </Button>
               </Link>
             </div>
           </div>
@@ -150,10 +150,10 @@ function HomePage() {
             Присоединяйтесь к тысячам пользователей, которые уже повысили свою продуктивность с intask
           </p>
           <Link href="/sign-up">
-            <Button size="lg" className="text-base px-8 py-6 h-auto">
-              Создать аккаунт
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+          <Button size="lg" className="text-base px-8 py-6 h-auto">
+            Создать аккаунт
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
           </Link>
         </div>
       </section>

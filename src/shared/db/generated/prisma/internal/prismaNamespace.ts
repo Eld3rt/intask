@@ -385,7 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Project: 'Project',
-  ProjectMember: 'ProjectMember'
+  ProjectMember: 'ProjectMember',
+  ProjectInvitation: 'ProjectInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "project" | "projectMember"
+    modelProps: "project" | "projectMember" | "projectInvitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +554,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ProjectInvitation: {
+      payload: Prisma.$ProjectInvitationPayload<ExtArgs>
+      fields: Prisma.ProjectInvitationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectInvitationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectInvitationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectInvitationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectInvitationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectInvitationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectInvitationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectInvitationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectInvitationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectInvitationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>
+        }
+        update: {
+          args: Prisma.ProjectInvitationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectInvitationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectInvitationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectInvitationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectInvitationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectInvitationPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectInvitationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectInvitation>
+        }
+        groupBy: {
+          args: Prisma.ProjectInvitationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectInvitationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectInvitationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectInvitationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -614,6 +689,19 @@ export const ProjectMemberScalarFieldEnum = {
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
 
 
+export const ProjectInvitationScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  email: 'email',
+  token: 'token',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectInvitationScalarFieldEnum = (typeof ProjectInvitationScalarFieldEnum)[keyof typeof ProjectInvitationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -669,6 +757,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InvitationStatus'
+ */
+export type EnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'InvitationStatus[]'
+ */
+export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus[]'>
     
 
 
@@ -782,6 +884,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   project?: Prisma.ProjectOmit
   projectMember?: Prisma.ProjectMemberOmit
+  projectInvitation?: Prisma.ProjectInvitationOmit
 }
 
 /* Types for Logging */

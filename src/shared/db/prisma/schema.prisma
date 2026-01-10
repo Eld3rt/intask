@@ -7,6 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum InvitationStatus {
+  pending
+  accepted
+}
+
 model Project {
   id          String   @id @default(cuid())
   slug        String   @unique
@@ -15,7 +20,8 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  members ProjectMember[]
+  members     ProjectMember[]
+  invitations ProjectInvitation[]
 
   @@index([createdAt])
 }
@@ -31,4 +37,23 @@ model ProjectMember {
   @@unique([projectId, userId])
   @@index([userId])
   @@index([projectId])
+}
+
+model ProjectInvitation {
+  id        String           @id @default(cuid())
+  projectId String
+  email     String
+  token     String           @unique
+  status    InvitationStatus @default(pending)
+  expiresAt DateTime
+  createdAt DateTime         @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, email, status])
+  @@index([projectId])
+  @@index([email])
+  @@index([token])
+  @@index([status])
+  @@index([expiresAt])
 }

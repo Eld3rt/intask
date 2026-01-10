@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Project: 'Project',
-  ProjectMember: 'ProjectMember'
+  ProjectMember: 'ProjectMember',
+  ProjectInvitation: 'ProjectInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -91,6 +92,19 @@ export const ProjectMemberScalarFieldEnum = {
 } as const
 
 export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
+
+
+export const ProjectInvitationScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  email: 'email',
+  token: 'token',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectInvitationScalarFieldEnum = (typeof ProjectInvitationScalarFieldEnum)[keyof typeof ProjectInvitationScalarFieldEnum]
 
 
 export const SortOrder = {

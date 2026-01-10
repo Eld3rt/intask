@@ -10,4 +10,5 @@
  */
 export type * from './models/Project'
 export type * from './models/ProjectMember'
+export type * from './models/ProjectInvitation'
 export type * from './commonInputTypes'
