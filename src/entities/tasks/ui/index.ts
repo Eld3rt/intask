@@ -1,2 +1,8 @@
 export { TaskCard } from './TaskCard'
 export type { Task, TaskPriority, TaskStatus } from './TaskCard'
+export { StatusKpiCard } from './StatusKpiCard'
+export type { StatusKpiCardProps } from './StatusKpiCard'
+export { StatusKpiCards } from './StatusKpiCards'
+export type { StatusKpiCardsProps } from './StatusKpiCards'
+export { OverdueKpiCard } from './OverdueKpiCard'
+export type { OverdueKpiCardProps } from './OverdueKpiCard'

@@ -21,10 +21,12 @@ import {
 } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
+import Link from 'next/link'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/shared/ui'
-import { TaskCard, type Task, type TaskStatus } from '@/entities/tasks/ui'
+import { Button } from '@/shared/ui'
+import { TaskCard, type Task, type TaskStatus, StatusKpiCards } from '@/entities/tasks/ui'
 import { CreateTaskButton, EditTaskModal, updateTaskPosition } from '@/features/tasks'
-import { CheckSquare } from 'lucide-react'
+import { CheckSquare, BarChart3 } from 'lucide-react'
 
 type Project = {
   id: string
@@ -324,7 +326,15 @@ function ProjectBoardClient({ project, tasks: initialTasks }: ProjectBoardClient
             <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">{project.name}</h1>
             {project.description && <p className="text-muted-foreground">{project.description}</p>}
           </div>
-          <CreateTaskButton projectId={project.id} className="whitespace-nowrap" />
+          <div className="flex items-center gap-3">
+            <Link href={`/workspace/${project.slug}/analytics`}>
+              <Button variant="outline" className="whitespace-nowrap">
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Analytics
+              </Button>
+            </Link>
+            <CreateTaskButton projectId={project.id} className="whitespace-nowrap" />
+          </div>
         </div>
 
         {/* Hero component - shown when no tasks */}
