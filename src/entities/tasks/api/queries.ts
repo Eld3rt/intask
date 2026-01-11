@@ -5,9 +5,17 @@ export async function getProjectTasks(projectId: string) {
     where: {
       projectId,
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: [
+      {
+        status: 'asc',
+      },
+      {
+        position: 'asc',
+      },
+      {
+        createdAt: 'desc',
+      },
+    ],
   })
 
   return tasks

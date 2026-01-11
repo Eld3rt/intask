@@ -81,6 +81,7 @@ model Task {
   description String?
   priority    TaskPriority @default(Medium)
   status      TaskStatus   @default(ToDo)
+  position    Int          @default(0)
   deadline    DateTime?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -90,6 +91,7 @@ model Task {
 
   @@index([projectId])
   @@index([status])
+  @@index([status, position])
   @@index([priority])
   @@index([deadline])
   @@index([createdAt])

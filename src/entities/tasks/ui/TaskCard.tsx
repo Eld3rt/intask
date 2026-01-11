@@ -16,6 +16,7 @@ type Task = {
   description: string | null
   priority: TaskPriority
   status: TaskStatus
+  position: number
   deadline: Date | string | null
   createdAt: Date | string
 }
@@ -104,13 +105,6 @@ const priorityColors: Record<TaskPriority, string> = {
   Urgent: 'bg-red-100 text-red-800 border-red-200',
 }
 
-const statusColors: Record<TaskStatus, string> = {
-  ToDo: 'bg-gray-100 text-gray-800 border-gray-200',
-  InProgress: 'bg-blue-100 text-blue-800 border-blue-200',
-  Review: 'bg-purple-100 text-purple-800 border-purple-200',
-  Done: 'bg-green-100 text-green-800 border-green-200',
-}
-
 function formatDate(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
   return dateObj.toLocaleDateString('en-US', {
@@ -156,7 +150,6 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
       </CardContent>
       <CardContent className="pt-0 space-y-3 mt-auto">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge className={cn('text-xs border', statusColors[task.status])}>{task.status}</Badge>
           <Badge className={cn('text-xs border', priorityColors[task.priority])}>{task.priority}</Badge>
           {deadlineDate && (
             <div

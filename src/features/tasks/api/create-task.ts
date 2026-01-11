@@ -69,6 +69,23 @@ export async function createTask(data: {
       newSlug = 'TSK-1'
     }
 
+    // Determine initial position: max position + 1 for tasks with the same status
+    const taskStatus = validatedData.status || 'ToDo'
+    const maxPositionTask = await prisma.task.findFirst({
+      where: {
+        projectId: validatedData.projectId,
+        status: taskStatus,
+      },
+      orderBy: {
+        position: 'desc',
+      },
+      select: {
+        position: true,
+      },
+    })
+
+    const initialPosition = maxPositionTask ? maxPositionTask.position + 1 : 0
+
     // Create task
     const task = await prisma.task.create({
       data: {
@@ -77,7 +94,8 @@ export async function createTask(data: {
         title: validatedData.title,
         description: validatedData.description || null,
         priority: validatedData.priority || 'Medium',
-        status: validatedData.status || 'ToDo',
+        status: taskStatus,
+        position: initialPosition,
         deadline: validatedData.deadline || null,
       },
     })
