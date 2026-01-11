@@ -25,6 +25,10 @@ intask is a collaborative task management application that enables teams to orga
 - **Analytics**: Project analytics and insights
 - **Rich Text Editing**: Rich text editor for task descriptions
 
+## Test Account for Demo
+
+test@gmail.com:123456
+
 ## Getting Started
 
 ### Prerequisites
