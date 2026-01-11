@@ -1,1 +1,1 @@
-export { getProjectTasks } from './queries'
+export { getProjectTasks, getLastTaskSlugInProject } from './queries'

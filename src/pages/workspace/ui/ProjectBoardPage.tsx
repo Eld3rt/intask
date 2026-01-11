@@ -26,7 +26,7 @@ function ProjectBoardPage({ project, tasks }: ProjectBoardPageProps) {
           <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">{project.name}</h1>
           {project.description && <p className="text-muted-foreground">{project.description}</p>}
         </div>
-        <CreateTaskButton className="whitespace-nowrap" />
+        <CreateTaskButton projectId={project.id} className="whitespace-nowrap" />
       </div>
 
       {/* Hero component - shown when no tasks */}
@@ -40,7 +40,7 @@ function ProjectBoardPage({ project, tasks }: ProjectBoardPageProps) {
             <CardDescription className="text-base mb-6 max-w-md mx-auto">
               Get started by creating your first task. Organize your work, track progress, and stay productive.
             </CardDescription>
-            <CreateTaskButton size="lg" />
+            <CreateTaskButton projectId={project.id} size="lg" />
           </CardHeader>
         </Card>
       )}
