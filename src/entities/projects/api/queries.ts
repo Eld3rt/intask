@@ -83,3 +83,32 @@ export async function getProjectBySlug(slug: string, userId: string) {
 
   return project
 }
+
+export async function getProjectById(projectId: string, userId: string) {
+  // First verify user is a member of the project
+  const projectMember = await prisma.projectMember.findFirst({
+    where: {
+      projectId,
+      userId,
+    },
+  })
+
+  if (!projectMember) {
+    return null
+  }
+
+  // Fetch project details
+  const project = await prisma.project.findUnique({
+    where: {
+      id: projectId,
+    },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      description: true,
+    },
+  })
+
+  return project
+}

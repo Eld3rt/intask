@@ -8,7 +8,7 @@ import { getLastTaskSlugInProject } from '@/entities/tasks'
 const createTaskSchema = z.object({
   projectId: z.string().min(1, 'Project ID is required'),
   title: z.string().min(1, 'Task title is required').max(200, 'Task title must be less than 200 characters'),
-  description: z.string().max(2000, 'Description must be less than 2000 characters').optional().nullable(),
+  description: z.string().max(50000, 'Description must be less than 50000 characters').optional().nullable(),
   priority: z.enum(['Low', 'Medium', 'High', 'Urgent']).optional(),
   status: z.enum(['ToDo', 'InProgress', 'Review', 'Done']).optional(),
   deadline: z.coerce.date().optional().nullable(),
@@ -41,11 +41,11 @@ export async function createTask(data: {
       return { error: 'Project not found or access denied' }
     }
 
-    // Trim spaces from input data
+    // Trim spaces from input data (but not description, which may be JSON)
     const trimmedData = {
       ...data,
       title: data.title.trim(),
-      description: data.description?.trim() || null,
+      description: data.description || null,
     }
 
     const validatedData = createTaskSchema.parse(trimmedData)

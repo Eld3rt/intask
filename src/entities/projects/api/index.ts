@@ -1,1 +1,1 @@
-export { getUserProjects, ensureDefaultProject, getProjectBySlug } from './queries'
+export { getUserProjects, ensureDefaultProject, getProjectBySlug, getProjectById } from './queries'

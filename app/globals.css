@@ -122,3 +122,11 @@
     @apply font-medium tracking-tight;
   }
 }
+
+.yoopta-block-actions {
+  display: none !important;
+}
+
+.yoopta-editor {
+  width: 100% !important;
+}
