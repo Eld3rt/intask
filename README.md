@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# intask
+
+Modern task and project management platform built with Next.js.
+
+## Overview
+
+intask is a collaborative task management application that enables teams to organize projects, assign tasks, track progress, and collaborate effectively. Built with modern web technologies and a clean architecture.
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: Clerk
+- **UI**: React 19, Tailwind CSS, Radix UI components
+- **Rich Text**: Yoopta Editor
+- **Drag & Drop**: dnd-kit
+
+## Features
+
+- **Projects**: Create and manage projects with custom descriptions
+- **Tasks**: Organize tasks with priorities, statuses, deadlines, and assignments
+- **Team Collaboration**: Invite team members via email invitations
+- **Task Management**: Drag-and-drop task organization, status tracking (ToDo, InProgress, Review, Done)
+- **Analytics**: Project analytics and insights
+- **Rich Text Editing**: Rich text editor for task descriptions
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18+
+- PostgreSQL (or Docker Compose)
+- Clerk account and API keys
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository
+2. Install dependencies:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. Set up environment variables (create `.env`):
 
-To learn more about Next.js, take a look at the following resources:
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5011/intask"
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+   CLERK_SECRET_KEY=your_clerk_secret
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Start PostgreSQL (using Docker Compose):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   docker compose up -d
+   ```
 
-## Deploy on Vercel
+5. Run database migrations:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npx prisma migrate dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+6. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+7. Open [http://localhost:3000](http://localhost:3000) in your browser

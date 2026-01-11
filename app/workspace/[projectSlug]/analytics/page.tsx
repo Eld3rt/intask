@@ -36,12 +36,5 @@ export default async function Analytics({ params }: AnalyticsPageProps) {
   // Fetch tasks for the project
   const tasks = await getProjectTasks(project.id)
 
-  return (
-    <AnalyticsPage
-      project={project}
-      tasks={tasks}
-      statusOrder={STATUS_ORDER}
-      statusLabels={STATUS_LABELS}
-    />
-  )
+  return <AnalyticsPage project={project} tasks={tasks} statusOrder={STATUS_ORDER} statusLabels={STATUS_LABELS} />
 }
