@@ -23,7 +23,7 @@ type Task = {
 /**
  * Extracts plain text from YooptaContentValue structure
  * Traverses the content blocks and extracts text nodes
- * 
+ *
  * YooptaContentValue structure:
  * Record<string, YooptaBlockData> where YooptaBlockData = {
  *   id: string,
@@ -43,7 +43,7 @@ function extractTextFromYooptaContent(content: YooptaContentValue): string {
   // Each block has a 'value' array (not 'children')
   Object.values(content).forEach(block => {
     if (block && typeof block === 'object' && 'value' in block) {
-      const extractTextFromValue = (value: any[]): void => {
+      const extractTextFromValue = (value: unknown[]): void => {
         if (!Array.isArray(value)) {
           return
         }
@@ -94,6 +94,7 @@ function getDescriptionPreview(description: string | null): string | null {
 
 type TaskCardProps = {
   task: Task
+  onEdit?: (task: Task) => void
 }
 
 const priorityColors: Record<TaskPriority, string> = {
@@ -119,7 +120,7 @@ function formatDate(date: Date | string): string {
   })
 }
 
-function TaskCard({ task }: TaskCardProps) {
+function TaskCard({ task, onEdit }: TaskCardProps) {
   const deadlineDate = task.deadline
     ? typeof task.deadline === 'string'
       ? new Date(task.deadline)
@@ -128,8 +129,17 @@ function TaskCard({ task }: TaskCardProps) {
   const isDeadlinePast = deadlineDate && deadlineDate < new Date()
   const isDeadlineToday = deadlineDate && deadlineDate.toDateString() === new Date().toDateString()
 
+  const handleClick = () => {
+    if (onEdit) {
+      onEdit(task)
+    }
+  }
+
   return (
-    <Card className="hover:shadow-md transition-shadow flex flex-col">
+    <Card
+      className={cn('hover:shadow-md transition-shadow flex flex-col', onEdit && 'cursor-pointer')}
+      onClick={handleClick}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-foreground leading-tight flex-1">{task.title}</h3>

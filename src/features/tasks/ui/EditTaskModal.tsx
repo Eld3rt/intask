@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,22 +21,11 @@ import {
   PopoverTrigger,
 } from '@/shared/ui'
 import { format } from 'date-fns'
-import {
-  X,
-  Maximize2,
-  Paperclip,
-  Circle,
-  GripVertical,
-  User,
-  Box,
-  Tag,
-  MoreHorizontal,
-  CalendarIcon,
-} from 'lucide-react'
-import { createTask } from '../api/create-task'
-import { getProject } from '@/features/projects'
+import { X, Circle, GripVertical, CalendarIcon } from 'lucide-react'
+import { updateTask } from '../api/update-task'
+import type { Task } from '@/entities/tasks'
 
-const createTaskSchema = z.object({
+const editTaskSchema = z.object({
   title: z.string().min(1, 'Task title is required').max(200, 'Task title must be less than 200 characters'),
   description: z.string().optional().nullable(),
   priority: z.enum(['Low', 'Medium', 'High', 'Urgent']).optional(),
@@ -44,12 +33,12 @@ const createTaskSchema = z.object({
   deadline: z.date().optional().nullable(),
 })
 
-type CreateTaskFormData = z.infer<typeof createTaskSchema>
+type EditTaskFormData = z.infer<typeof editTaskSchema>
 
-type CreateTaskModalProps = {
+type EditTaskModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  projectId: string
+  task: Task | null
 }
 
 const PRIORITY_OPTIONS = [
@@ -66,24 +55,50 @@ const STATUS_OPTIONS = [
   { value: 'Done', label: 'Done' },
 ] as const
 
-function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps) {
+function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [project, setProject] = useState<{ slug: string; name: string } | null>(null)
-  const [createMore, setCreateMore] = useState(false)
   const [editorValue, setEditorValue] = useState<YooptaContentValue | undefined>(undefined)
 
-  // Fetch project info
-  useEffect(() => {
-    if (open && projectId) {
-      getProject(projectId).then(result => {
-        if (result.success && result.project) {
-          setProject(result.project)
-        }
-      })
+  // Parse task description JSON for Yoopta editor
+  const initialEditorValue = useMemo(() => {
+    if (!task?.description) {
+      return undefined
     }
-  }, [open, projectId])
+    try {
+      return JSON.parse(task.description) as YooptaContentValue
+    } catch {
+      return undefined
+    }
+  }, [task?.description])
+
+  // Initialize form with task data
+  const defaultValues = useMemo<EditTaskFormData>(() => {
+    if (!task) {
+      return {
+        title: '',
+        description: null,
+        priority: 'Medium',
+        status: 'ToDo',
+        deadline: null,
+      }
+    }
+
+    const deadline = task.deadline
+      ? typeof task.deadline === 'string'
+        ? new Date(task.deadline)
+        : task.deadline
+      : null
+
+    return {
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      status: task.status,
+      deadline,
+    }
+  }, [task])
 
   const {
     register,
@@ -92,21 +107,53 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
     formState: { errors },
     reset,
     watch,
-  } = useForm<CreateTaskFormData>({
-    resolver: zodResolver(createTaskSchema),
-    defaultValues: {
-      title: '',
-      description: null,
-      priority: 'Medium',
-      status: 'ToDo',
-      deadline: null,
-    },
+  } = useForm<EditTaskFormData>({
+    resolver: zodResolver(editTaskSchema),
+    defaultValues,
   })
+
+  // Reset form when task changes
+  useEffect(() => {
+    if (task && open) {
+      reset(defaultValues)
+      setEditorValue(initialEditorValue)
+    }
+  }, [task, open, reset, defaultValues, initialEditorValue])
+
+  // Track form values for change detection
+  const currentTitle = watch('title')
+  const currentPriority = watch('priority')
+  const currentStatus = watch('status')
+  const currentDeadline = watch('deadline')
+
+  // Compare current values with initial values to detect changes
+  const hasChanges = useMemo(() => {
+    if (!task) return false
+
+    const titleChanged = currentTitle.trim() !== task.title.trim()
+    const priorityChanged = currentPriority !== task.priority
+    const statusChanged = currentStatus !== task.status
+
+    const initialDeadline = task.deadline
+      ? typeof task.deadline === 'string'
+        ? new Date(task.deadline)
+        : task.deadline
+      : null
+    const deadlineChanged = (currentDeadline?.getTime() || null) !== (initialDeadline?.getTime() || null)
+
+    // Compare editor value with initial description
+    const editorJson = editorValue ? JSON.stringify(editorValue) : null
+    const descriptionChanged = editorJson !== (task.description || null)
+
+    return titleChanged || priorityChanged || statusChanged || deadlineChanged || descriptionChanged
+  }, [task, currentTitle, currentPriority, currentStatus, currentDeadline, editorValue])
 
   const titleValue = watch('title')
   const isTitleEmpty = !titleValue || titleValue.trim().length === 0
 
-  const onSubmit = async (data: CreateTaskFormData) => {
+  const onSubmit = async (data: EditTaskFormData) => {
+    if (!task) return
+
     setIsSubmitting(true)
     setError(null)
     try {
@@ -114,35 +161,33 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
       const descriptionJson = editorValue ? JSON.stringify(editorValue) : null
 
       const trimmedData = {
-        projectId,
+        taskId: task.id,
         title: data.title.trim(),
         description: descriptionJson,
-        priority: data.priority || 'Medium',
-        status: data.status || 'ToDo',
-        deadline: data.deadline || null,
+        priority: data.priority !== undefined ? data.priority : task.priority,
+        status: data.status !== undefined ? data.status : task.status,
+        deadline: data.deadline !== undefined ? data.deadline : null,
       }
-      const result = await createTask(trimmedData)
+      const result = await updateTask(trimmedData)
 
       if (result.error) {
         setError(result.error)
         return
       }
 
-      // Reset form
-      reset()
-      setEditorValue(undefined)
-
-      // Close modal unless "Create more" is enabled
-      if (!createMore) {
-        onOpenChange(false)
-      }
+      // Close modal
+      onOpenChange(false)
       router.refresh()
     } catch (error) {
-      console.error('Error creating task:', error)
-      setError('Failed to create task')
+      console.error('Error updating task:', error)
+      setError('Failed to update task')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (!task) {
+    return null
   }
 
   return (
@@ -150,7 +195,7 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
       <DialogContent className="max-w-4xl w-full h-[85vh] max-h-[900px] p-0 flex flex-col overflow-hidden [&>button]:hidden">
         <div className="flex items-center justify-between px-6 pt-4 pb-2 border-b border-border/50">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>New task</span>
+            <span>Edit task {task.slug}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -174,7 +219,6 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
               <input
                 type="text"
                 {...register('title')}
-                placeholder="Task title"
                 className="w-full text-2xl font-semibold bg-transparent border-none outline-none placeholder:text-muted-foreground/60 focus:ring-0 p-0"
                 maxLength={200}
               />
@@ -277,8 +321,8 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
             </div>
 
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={isSubmitting || isTitleEmpty} size="default">
-                {isSubmitting ? 'Creating...' : 'Create task'}
+              <Button type="submit" disabled={isSubmitting || isTitleEmpty || !hasChanges} size="default">
+                {isSubmitting ? 'Saving...' : 'Save task'}
               </Button>
             </div>
           </div>
@@ -288,4 +332,4 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
   )
 }
 
-export { CreateTaskModal }
+export { EditTaskModal }
