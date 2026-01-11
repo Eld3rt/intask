@@ -21,8 +21,9 @@ import {
   PopoverTrigger,
 } from '@/shared/ui'
 import { format } from 'date-fns'
-import { X, Circle, GripVertical, CalendarIcon } from 'lucide-react'
+import { X, Circle, GripVertical, CalendarIcon, Trash2 } from 'lucide-react'
 import { updateTask } from '../api/update-task'
+import { DeleteTaskModal } from './DeleteTaskModal'
 import type { Task } from '@/entities/tasks'
 
 const editTaskSchema = z.object({
@@ -60,6 +61,7 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [editorValue, setEditorValue] = useState<YooptaContentValue | undefined>(undefined)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   // Parse task description JSON for Yoopta editor
   const initialEditorValue = useMemo(() => {
@@ -321,6 +323,17 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
             </div>
 
             <div className="flex items-center gap-4">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => setIsDeleteModalOpen(true)}
+                disabled={isSubmitting}
+                size="default"
+                className="text-white"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </Button>
               <Button type="submit" disabled={isSubmitting || isTitleEmpty || !hasChanges} size="default">
                 {isSubmitting ? 'Saving...' : 'Save task'}
               </Button>
@@ -328,6 +341,12 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
           </div>
         </form>
       </DialogContent>
+      <DeleteTaskModal
+        open={isDeleteModalOpen}
+        onOpenChange={setIsDeleteModalOpen}
+        task={task}
+        onDeleted={() => onOpenChange(false)}
+      />
     </Dialog>
   )
 }
