@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/shared/ui'
-import { format } from 'date-fns'
+import { format, startOfToday } from 'date-fns'
 import { X, Circle, GripVertical, CalendarIcon, Trash2 } from 'lucide-react'
 import { updateTask } from '../api/update-task'
 import { DeleteTaskModal } from './DeleteTaskModal'
@@ -62,6 +62,7 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
   const [error, setError] = useState<string | null>(null)
   const [editorValue, setEditorValue] = useState<YooptaContentValue | undefined>(undefined)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [initialDeadline, setInitialDeadline] = useState<Date | null>(null)
 
   // Parse task description JSON for Yoopta editor
   const initialEditorValue = useMemo(() => {
@@ -117,6 +118,12 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
   // Reset form when task changes
   useEffect(() => {
     if (task && open) {
+      const deadline = task.deadline
+        ? typeof task.deadline === 'string'
+          ? new Date(task.deadline)
+          : task.deadline
+        : null
+      setInitialDeadline(deadline)
       reset(defaultValues)
       setEditorValue(initialEditorValue)
     }
@@ -158,6 +165,19 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
 
     setIsSubmitting(true)
     setError(null)
+    
+    // Validate deadline: allow keeping existing past deadline, but prevent setting new past deadline
+    if (data.deadline) {
+      const deadlineChanged = 
+        (initialDeadline?.getTime() || null) !== (data.deadline.getTime() || null)
+      
+      if (deadlineChanged && data.deadline < startOfToday()) {
+        setError('Deadline cannot be in the past')
+        setIsSubmitting(false)
+        return
+      }
+    }
+    
     try {
       // Convert YooptaContentValue to JSON string
       const descriptionJson = editorValue ? JSON.stringify(editorValue) : null
@@ -312,10 +332,31 @@ function EditTaskModal({ open, onOpenChange, task }: EditTaskModalProps) {
                       <Calendar
                         mode="single"
                         selected={field.value || undefined}
-                        onSelect={date => field.onChange(date || null)}
+                        onSelect={date => {
+                          // Allow selecting the initial deadline even if it's in the past
+                          if (date && initialDeadline && date.getTime() === initialDeadline.getTime()) {
+                            field.onChange(date)
+                          } else if (date && date >= startOfToday()) {
+                            field.onChange(date)
+                          } else if (!date) {
+                            field.onChange(null)
+                          }
+                          // If date is in the past and not the initial deadline, don't change
+                        }}
                         initialFocus
                         captionLayout="dropdown"
+                        disabled={date => {
+                          // Allow the initial deadline even if it's in the past
+                          if (initialDeadline && date.getTime() === initialDeadline.getTime()) {
+                            return false
+                          }
+                          // Disable all other past dates
+                          return date < startOfToday()
+                        }}
                       />
+                      {errors.deadline && (
+                        <p className="text-sm text-destructive px-3 py-2">{errors.deadline.message}</p>
+                      )}
                     </PopoverContent>
                   </Popover>
                 )}

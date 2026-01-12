@@ -11,7 +11,15 @@ const createTaskSchema = z.object({
   description: z.string().max(50000, 'Description must be less than 50000 characters').optional().nullable(),
   priority: z.enum(['Low', 'Medium', 'High', 'Urgent']).optional(),
   status: z.enum(['ToDo', 'InProgress', 'Review', 'Done']).optional(),
-  deadline: z.coerce.date().optional().nullable(),
+  deadline: z
+    .coerce
+    .date()
+    .optional()
+    .nullable()
+    .refine(
+      date => !date || date >= new Date(new Date().setHours(0, 0, 0, 0)),
+      'Deadline cannot be in the past'
+    ),
 })
 
 export async function createTask(data: {

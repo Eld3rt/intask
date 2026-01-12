@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/shared/ui'
-import { format } from 'date-fns'
+import { format, startOfToday } from 'date-fns'
 import {
   X,
   Maximize2,
@@ -41,7 +41,14 @@ const createTaskSchema = z.object({
   description: z.string().optional().nullable(),
   priority: z.enum(['Low', 'Medium', 'High', 'Urgent']).optional(),
   status: z.enum(['ToDo', 'InProgress', 'Review', 'Done']).optional(),
-  deadline: z.date().optional().nullable(),
+  deadline: z
+    .date()
+    .optional()
+    .nullable()
+    .refine(
+      date => !date || date >= startOfToday(),
+      'Deadline cannot be in the past'
+    ),
 })
 
 type CreateTaskFormData = z.infer<typeof createTaskSchema>
@@ -269,7 +276,11 @@ function CreateTaskModal({ open, onOpenChange, projectId }: CreateTaskModalProps
                         onSelect={date => field.onChange(date || null)}
                         initialFocus
                         captionLayout="dropdown"
+                        disabled={date => date < startOfToday()}
                       />
+                      {errors.deadline && (
+                        <p className="text-sm text-destructive px-3 py-2">{errors.deadline.message}</p>
+                      )}
                     </PopoverContent>
                   </Popover>
                 )}

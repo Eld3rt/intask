@@ -58,6 +58,23 @@ export async function updateTask(data: {
       description: data.description || null,
     }
 
+    // Validate deadline only if it's being changed (not keeping existing past deadline)
+    const existingDeadline = task.deadline ? new Date(task.deadline) : null
+    const newDeadline = trimmedData.deadline !== undefined ? trimmedData.deadline : null
+    
+    // Check if deadline is being changed
+    const deadlineChanged = 
+      (existingDeadline?.getTime() || null) !== (newDeadline?.getTime() || null)
+    
+    // If deadline is being changed, validate it's not in the past
+    if (deadlineChanged && newDeadline) {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      if (newDeadline < today) {
+        return { error: 'Deadline cannot be in the past' }
+      }
+    }
+
     const validatedData = updateTaskSchema.parse(trimmedData)
 
     // Update task - use provided values or keep existing ones
