@@ -106,9 +106,9 @@ function HomePage() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <Sparkles className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Умная автоматизация</CardTitle>
+                <CardTitle>Умное выделение важных задач</CardTitle>
                 <CardDescription>
-                  Интеллектуальные алгоритмы помогают оптимизировать рабочие процессы и сократить рутинные операции
+                  Платформа автоматически определяет и выделяет важные задачи, объясняя причины их приоритетности на основе сроков, приоритетов и других факторов
                 </CardDescription>
               </CardHeader>
             </Card>

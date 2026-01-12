@@ -5,6 +5,7 @@ import { Badge } from '@/shared/ui'
 import { Calendar } from 'lucide-react'
 import { cn } from '@/shared/lib'
 import { YooptaContentValue } from '@yoopta/editor'
+import { ImportanceBadge } from './ImportanceBadge'
 
 type TaskPriority = 'Low' | 'Medium' | 'High' | 'Urgent'
 type TaskStatus = 'ToDo' | 'InProgress' | 'Review' | 'Done'
@@ -131,9 +132,10 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
 
   return (
     <Card
-      className={cn('hover:shadow-md transition-shadow flex flex-col', onEdit && 'cursor-pointer')}
+      className={cn('hover:shadow-md transition-shadow flex flex-col relative', onEdit && 'cursor-pointer')}
       onClick={handleClick}
     >
+      <ImportanceBadge task={task} />
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-foreground leading-tight flex-1">{task.title}</h3>
@@ -166,7 +168,7 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
               <span>{formatDate(deadlineDate)}</span>
             </div>
           )}
-        </div>{' '}
+        </div>
       </CardContent>
     </Card>
   )

@@ -26,7 +26,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/shared/ui'
 import { Button } from '@/shared/ui'
 import { TaskCard, type Task, type TaskStatus, StatusKpiCards } from '@/entities/tasks/ui'
 import { CreateTaskButton, EditTaskModal, updateTaskPosition } from '@/features/tasks'
-import { CheckSquare, BarChart3 } from 'lucide-react'
+import { CheckSquare, BarChart3, Sparkles, X } from 'lucide-react'
 
 type Project = {
   id: string
@@ -112,6 +112,7 @@ function ProjectBoardClient({ project, tasks: initialTasks }: ProjectBoardClient
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [activeTask, setActiveTask] = useState<Task | null>(null)
+  const [insightBannerDismissed, setInsightBannerDismissed] = useState(false)
 
   // Update local tasks when initialTasks change (e.g., after task creation/deletion)
   useEffect(() => {
@@ -326,7 +327,23 @@ function ProjectBoardClient({ project, tasks: initialTasks }: ProjectBoardClient
             <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">{project.name}</h1>
             {project.description && <p className="text-muted-foreground">{project.description}</p>}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Insight feature banner */}
+            {!insightBannerDismissed && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-lg text-sm">
+                <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                <span className="text-purple-900 dark:text-purple-100 whitespace-nowrap">
+                  <span className="font-medium">Умное выделение:</span> важные задачи помечаются автоматически
+                </span>
+                <button
+                  onClick={() => setInsightBannerDismissed(true)}
+                  className="ml-1 text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors"
+                  aria-label="Закрыть"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
             <Link href={`/workspace/${project.slug}/analytics`}>
               <Button variant="outline" className="whitespace-nowrap">
                 <BarChart3 className="mr-2 h-4 w-4" />

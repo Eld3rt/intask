@@ -1,5 +1,6 @@
 export { TaskCard } from './TaskCard'
 export type { Task, TaskPriority, TaskStatus } from './TaskCard'
+export { ImportanceBadge } from './ImportanceBadge'
 export { StatusKpiCard } from './StatusKpiCard'
 export type { StatusKpiCardProps } from './StatusKpiCard'
 export { StatusKpiCards } from './StatusKpiCards'
